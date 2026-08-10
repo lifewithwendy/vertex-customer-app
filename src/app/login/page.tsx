@@ -2,12 +2,14 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,14 +25,19 @@ export default function LoginPage() {
     setTimeout(() => {
       setIsLoading(false);
       setIsSuccess(true);
+      
+      // Redirect to dashboard after a brief delay
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
     }, 1200);
   };
 
   const isFormValid = email.length > 0 && password.length > 0;
 
   return (
-    <div className="min-h-screen w-full bg-[#0a0a0c] p-2 sm:p-4 md:p-6 flex items-center justify-center font-sans antialiased text-neutral-900">
-      <div className="w-full max-w-[1540px] h-[calc(100vh-2rem)] min-h-[660px] rounded-3xl overflow-hidden flex flex-col lg:flex-row bg-black shadow-2xl relative border border-neutral-800/40">
+    <div className="h-screen w-full bg-[#0a0a0c] p-2 sm:p-4 md:p-6 flex items-center justify-center font-sans antialiased text-neutral-900 overflow-hidden">
+      <div className="w-full max-w-[1540px] h-full rounded-3xl overflow-hidden flex flex-col lg:flex-row bg-black shadow-2xl relative border border-neutral-800/40">
         
         {/* Glowing Aura Streams (Black, White & Orange Theme) - Moved to main container */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -68,9 +75,9 @@ export default function LoginPage() {
         </div>
 
         {/* RIGHT PANE - Light Login Form Card */}
-        <div className="relative z-10 lg:w-1/2 w-full flex-1 lg:h-full p-2 sm:p-4 lg:p-6 flex">
-          <div className="w-full h-full bg-[#f6f7f9] p-6 sm:p-12 lg:p-16 flex flex-col items-center justify-center rounded-2xl lg:rounded-3xl shadow-xl">
-            <div className="w-full max-w-[400px] space-y-8 my-auto">
+        <div className="relative z-10 lg:w-1/2 w-full flex-1 h-full p-2 sm:p-4 lg:p-6 flex">
+          <div className="w-full h-full bg-[#f6f7f9] p-6 sm:p-12 lg:p-16 flex flex-col items-center justify-center rounded-2xl lg:rounded-3xl shadow-xl overflow-y-auto overflow-x-hidden">
+            <div className="w-full max-w-[400px] space-y-8 my-auto py-4">
               
               {/* Form Title */}
               <div className="text-center space-y-2">
