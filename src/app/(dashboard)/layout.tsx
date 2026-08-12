@@ -2,16 +2,27 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { DollarSign, FileText, CreditCard, LogOut, Edit2 } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
 
   const navItems = [
-    { name: "Pricing", href: "/dashboard/pricing", icon: DollarSign },
-    { name: "Invoices", href: "/dashboard/invoices", icon: FileText },
-    { name: "Payables", href: "/dashboard/payables", icon: CreditCard },
+    { name: "Pricing", href: "/pricing", icon: DollarSign },
+    { name: "Invoices", href: "/invoices", icon: FileText },
+    { name: "Payables", href: "/payables", icon: CreditCard },
   ];
 
   return (
@@ -73,9 +84,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <button className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition-colors" title="Edit Profile">
                   <Edit2 className="w-4 h-4" />
                 </button>
-                <Link href="/login" className="p-1.5 rounded-lg text-neutral-400 hover:text-orange-500 hover:bg-orange-500/10 transition-colors" title="Logout">
+                <button onClick={handleLogout} className="p-1.5 rounded-lg text-neutral-400 hover:text-orange-500 hover:bg-orange-500/10 transition-colors" title="Logout">
                   <LogOut className="w-4 h-4" />
-                </Link>
+                </button>
               </div>
             </div>
           </div>

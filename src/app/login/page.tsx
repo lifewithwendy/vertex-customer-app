@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,22 +15,36 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) return;
 
     setIsLoading(true);
-    // Simulate login API request
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsSuccess(true);
+    setError(null);
+    
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
       
-      // Redirect to dashboard after a brief delay
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1000);
-    }, 1200);
+      if (res.ok) {
+        setIsSuccess(true);
+        setTimeout(() => {
+          router.push("/pricing");
+        }, 1000);
+      } else {
+        const data = await res.json();
+        setError(data.error || "Login failed");
+      }
+    } catch (err) {
+      setError("An error occurred during login");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isFormValid = email.length > 0 && password.length > 0;
@@ -106,6 +120,13 @@ export default function LoginPage() {
             ) : (
               /* Login Form */
               <form onSubmit={handleSubmit} className="space-y-6">
+                
+                {error && (
+                  <div className="flex items-center gap-3 p-3.5 text-sm text-red-600 bg-red-50 border border-red-100 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-300 shadow-sm">
+                    <AlertCircle className="w-5 h-5 shrink-0 text-red-500" />
+                    <p className="font-medium tracking-tight">{error}</p>
+                  </div>
+                )}
                 
                 {/* Email Field */}
                 <div className="space-y-2">
