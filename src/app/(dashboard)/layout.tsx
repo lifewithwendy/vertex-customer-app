@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   const navItems = [
-    { name: "Pricing", href: "/pricing", icon: DollarSign },
+    { name: "Inquiries", href: "/inquiries", icon: DollarSign },
     { name: "Invoices", href: "/invoices", icon: FileText },
     { name: "Payables", href: "/payables", icon: CreditCard },
   ];

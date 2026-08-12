@@ -34,7 +34,7 @@ export default function LoginPage() {
       if (res.ok) {
         setIsSuccess(true);
         setTimeout(() => {
-          router.push("/pricing");
+          router.push("/inquiries");
         }, 1000);
       } else {
         const data = await res.json();
@@ -111,8 +111,7 @@ export default function LoginPage() {
                 </div>
                 <Button 
                   onClick={() => setIsSuccess(false)} 
-                  variant="outline" 
-                  className="rounded-full mt-2 text-xs border-neutral-300 hover:bg-neutral-100"
+                  className="rounded-full mt-2 text-xs bg-white border border-neutral-300 text-neutral-700 hover:bg-neutral-50 shadow-none"
                 >
                   Sign in with another account
                 </Button>
