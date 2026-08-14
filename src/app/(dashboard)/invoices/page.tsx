@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Eye, Download, X, Clock, CreditCard, Truck, MapPin, Package, CheckCircle2 } from "lucide-react";
+import { Search, Eye, Download, X, Clock, CreditCard, Truck, MapPin, Package, CheckCircle2, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -16,11 +16,12 @@ type Invoice = {
   date_created: string;
   base_amount: number;
   additional_charges: AdditionalCharge[];
-  status: "Unpaid" | "Paid";
+  status: "Unpaid" | "Paid" | "Rescheduled";
+  rescheduled_date?: string;
 };
 
 export default function InvoicesPage() {
-  const [invoices] = useState<Invoice[]>([
+  const [invoices, setInvoices] = useState<Invoice[]>([
     {
       invoice_id: "INV-1042",
       quote_id: "QT-001",
@@ -39,6 +40,41 @@ export default function InvoicesPage() {
       base_amount: 6200,
       additional_charges: [],
       status: "Paid",
+    },
+    {
+      invoice_id: "INV-1044",
+      quote_id: "QT-005",
+      date_created: "2026-08-12",
+      base_amount: 3200,
+      additional_charges: [],
+      status: "Rescheduled",
+      rescheduled_date: "2026-08-25",
+    },
+    {
+      invoice_id: "INV-1045",
+      quote_id: "QT-007",
+      date_created: "2026-08-13",
+      base_amount: 8100,
+      additional_charges: [
+        { description: "Late Fee", amount: 50 },
+      ],
+      status: "Unpaid",
+    },
+    {
+      invoice_id: "INV-1046",
+      quote_id: "QT-009",
+      date_created: "2026-08-14",
+      base_amount: 5000,
+      additional_charges: [],
+      status: "Paid",
+    },
+    {
+      invoice_id: "INV-1047",
+      quote_id: "QT-011",
+      date_created: "2026-08-15",
+      base_amount: 2800,
+      additional_charges: [],
+      status: "Unpaid",
     }
   ]);
 
@@ -46,6 +82,8 @@ export default function InvoicesPage() {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [paymentInvoice, setPaymentInvoice] = useState<Invoice | null>(null);
   const [trackingInvoice, setTrackingInvoice] = useState<Invoice | null>(null);
+  const [rescheduleInvoice, setRescheduleInvoice] = useState<Invoice | null>(null);
+  const [newRescheduleDate, setNewRescheduleDate] = useState("");
 
   const calculateFED = (dateStr: string) => {
     const createdDate = new Date(dateStr);
@@ -119,13 +157,18 @@ export default function InvoicesPage() {
                       </td>
                       <td className="px-6 py-4 font-semibold text-neutral-900">LKR {calculateTotal(inv).toLocaleString()}</td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex px-2.5 py-1 rounded-md text-xs font-medium ${
-                          inv.status === 'Paid' 
-                            ? 'bg-green-100 text-green-700' 
+                        <div className="flex flex-col items-start gap-1">
+                          <span className={`inline-flex px-2.5 py-1 rounded-md text-xs font-medium ${
+                            inv.status === 'Paid' ? 'bg-green-100 text-green-700' 
+                            : inv.status === 'Rescheduled' ? 'bg-blue-100 text-blue-700' 
                             : 'bg-red-100 text-red-700'
-                        }`}>
-                          {inv.status}
-                        </span>
+                          }`}>
+                            {inv.status}
+                          </span>
+                          {inv.status === 'Rescheduled' && inv.rescheduled_date && (
+                            <span className="text-[10px] text-neutral-500 font-medium">To: {inv.rescheduled_date}</span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
@@ -144,13 +187,22 @@ export default function InvoicesPage() {
                             <Truck className="w-4 h-4" />
                           </button>
                           {inv.status === "Unpaid" && (
-                            <button 
-                              onClick={() => setPaymentInvoice(inv)}
-                              className="p-1.5 rounded-lg text-neutral-400 hover:text-green-500 hover:bg-green-50 transition-colors"
-                              title="Make Payment"
-                            >
-                              <CreditCard className="w-4 h-4" />
-                            </button>
+                            <>
+                              <button 
+                                onClick={() => { setRescheduleInvoice(inv); setNewRescheduleDate(""); }}
+                                className="p-1.5 rounded-lg text-neutral-400 hover:text-amber-500 hover:bg-amber-50 transition-colors"
+                                title="Reschedule Payment"
+                              >
+                                <CalendarDays className="w-4 h-4" />
+                              </button>
+                              <button 
+                                onClick={() => setPaymentInvoice(inv)}
+                                className="p-1.5 rounded-lg text-neutral-400 hover:text-green-500 hover:bg-green-50 transition-colors"
+                                title="Make Payment"
+                              >
+                                <CreditCard className="w-4 h-4" />
+                              </button>
+                            </>
                           )}
                         </div>
                       </td>
@@ -225,7 +277,9 @@ export default function InvoicesPage() {
 
             <div className="p-5 border-t border-neutral-100 bg-neutral-50/50 flex justify-between items-center">
               <span className={`inline-flex px-3 py-1.5 rounded-md text-sm font-semibold ${
-                  selectedInvoice.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                  selectedInvoice.status === 'Paid' ? 'bg-green-100 text-green-700' 
+                  : selectedInvoice.status === 'Rescheduled' ? 'bg-blue-100 text-blue-700'
+                  : 'bg-red-100 text-red-700'
               }`}>
                 {selectedInvoice.status.toUpperCase()}
               </span>
@@ -450,6 +504,56 @@ export default function InvoicesPage() {
             <div className="p-5 border-t border-neutral-100 bg-neutral-50/50 flex justify-end">
               <Button type="button" onClick={() => setTrackingInvoice(null)} className="rounded-full px-6 h-10 bg-neutral-900 hover:bg-neutral-800 text-white border-0 shadow-sm">
                 Close Tracker
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reschedule Modal */}
+      {rescheduleInvoice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setRescheduleInvoice(null)} />
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between p-5 border-b border-neutral-100">
+              <h2 className="text-lg font-semibold text-neutral-900">Reschedule Payment</h2>
+              <button onClick={() => setRescheduleInvoice(null)} className="text-neutral-400 hover:text-neutral-600 transition-colors rounded-lg p-1 hover:bg-neutral-100">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-5 space-y-4">
+               <p className="text-sm text-neutral-600">Please select a new date to schedule your payment for Invoice <strong>{rescheduleInvoice.invoice_id}</strong>.</p>
+               
+               <div>
+                 <label className="text-xs font-medium text-neutral-700 mb-1 block">New Payment Date</label>
+                 <Input 
+                   type="date" 
+                   value={newRescheduleDate} 
+                   onChange={(e) => setNewRescheduleDate(e.target.value)} 
+                   className="bg-neutral-50" 
+                 />
+               </div>
+            </div>
+
+            <div className="p-5 border-t border-neutral-100 bg-neutral-50/50 flex justify-end gap-3">
+              <Button type="button" onClick={() => setRescheduleInvoice(null)} variant="outline" className="rounded-full px-5 h-10 border-neutral-200 bg-white hover:bg-neutral-50 text-neutral-700">
+                Cancel
+              </Button>
+              <Button 
+                type="button" 
+                disabled={!newRescheduleDate}
+                onClick={() => { 
+                  setInvoices(invoices.map(inv => 
+                    inv.invoice_id === rescheduleInvoice.invoice_id 
+                      ? { ...inv, status: "Rescheduled", rescheduled_date: newRescheduleDate } 
+                      : inv
+                  ));
+                  setRescheduleInvoice(null);
+                }} 
+                className="rounded-full px-6 h-10 bg-amber-600 hover:bg-amber-700 text-white border-0 shadow-sm"
+              >
+                Confirm
               </Button>
             </div>
           </div>
