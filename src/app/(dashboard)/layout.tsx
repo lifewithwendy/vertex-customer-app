@@ -94,7 +94,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Main Content Area Container */}
         <div className="relative z-10 flex-1 h-full py-2 pr-2 sm:py-4 sm:pr-4 lg:py-4 lg:pr-4 pl-0 flex">
-          <div className="w-full h-full bg-[#f6f7f9] rounded-2xl lg:rounded-[2rem] shadow-xl overflow-y-auto">
+          <div className="w-full h-full bg-gradient-to-br from-[#f6f7f9] via-[#f6f7f9] to-orange-50 rounded-2xl lg:rounded-[2rem] shadow-xl overflow-y-auto">
             {children}
           </div>
         </div>
