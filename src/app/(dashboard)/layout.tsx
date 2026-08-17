@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FileText, LogOut, Edit2, ClipboardList, MessageSquare } from "lucide-react";
+import { FileText, LogOut, Edit2, ClipboardList, MessageSquare, Truck } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -23,6 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Inquiries", href: "/inquiries", icon: MessageSquare },
     { name: "Quotations", href: "/quotations", icon: ClipboardList },
     { name: "Invoices", href: "/invoices", icon: FileText },
+    { name: "Tracking", href: "/tracking", icon: Truck },
   ];
 
   return (
