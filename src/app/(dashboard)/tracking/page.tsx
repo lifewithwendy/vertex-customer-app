@@ -11,7 +11,6 @@ import {
   Calendar,
   Hash,
   FileText,
-  Navigation,
 } from "lucide-react";
 
 type TrackingEvent = {
@@ -29,6 +28,7 @@ type Shipment = {
   destination: string;
   status: "In Transit" | "Delivered" | "Processing" | "Out for Delivery";
   estimated_delivery: string;
+  date_created: string;
   last_updated: string;
   events: TrackingEvent[];
 };
@@ -42,6 +42,7 @@ const shipmentData: Shipment[] = [
     destination: "Kandy Warehouse",
     status: "In Transit",
     estimated_delivery: "2026-08-20",
+    date_created: "2026-08-01",
     last_updated: "2026-08-17T14:30:00",
     events: [
       { title: "In Transit to Kandy", date: "Aug 17, 14:30", description: "Shipment is currently in transit on the Colombo-Kandy expressway.", completed: true },
@@ -59,6 +60,7 @@ const shipmentData: Shipment[] = [
     destination: "Galle Port",
     status: "Delivered",
     estimated_delivery: "2026-08-14",
+    date_created: "2026-08-10",
     last_updated: "2026-08-14T11:20:00",
     events: [
       { title: "Delivered", date: "Aug 14, 11:20", description: "Package successfully delivered to Galle Port.", completed: true },
@@ -77,6 +79,7 @@ const shipmentData: Shipment[] = [
     destination: "Jaffna Distribution Center",
     status: "Processing",
     estimated_delivery: "2026-08-25",
+    date_created: "2026-08-12",
     last_updated: "2026-08-15T10:00:00",
     events: [
       { title: "Order Processed", date: "Aug 15, 10:00", description: "Order confirmed. Awaiting packaging.", completed: true },
@@ -92,6 +95,7 @@ const shipmentData: Shipment[] = [
     destination: "Batticaloa Depot",
     status: "Out for Delivery",
     estimated_delivery: "2026-08-17",
+    date_created: "2026-08-13",
     last_updated: "2026-08-17T06:45:00",
     events: [
       { title: "Out for Delivery", date: "Aug 17, 06:45", description: "Shipment is out for final delivery to Batticaloa Depot.", completed: true },
@@ -111,6 +115,7 @@ const shipmentData: Shipment[] = [
     destination: "Trincomalee Port",
     status: "Delivered",
     estimated_delivery: "2026-08-12",
+    date_created: "2026-08-14",
     last_updated: "2026-08-12T15:00:00",
     events: [
       { title: "Delivered", date: "Aug 12, 15:00", description: "Package successfully delivered to Trincomalee Port.", completed: true },
@@ -127,6 +132,7 @@ const shipmentData: Shipment[] = [
     destination: "Negombo Facility",
     status: "In Transit",
     estimated_delivery: "2026-08-19",
+    date_created: "2026-08-15",
     last_updated: "2026-08-16T16:00:00",
     events: [
       { title: "Dispatched from Hub", date: "Aug 16, 16:00", description: "Package dispatched from the main sorting hub in Colombo.", completed: true },
@@ -149,9 +155,9 @@ function formatDate(iso: string) {
 }
 
 export default function TrackingPage() {
-  // Sort by last_updated desc; latest is index 0
+  // Sort by date_created desc; most recently created shipment is index 0
   const sorted = useMemo(
-    () => [...shipmentData].sort((a, b) => new Date(b.last_updated).getTime() - new Date(a.last_updated).getTime()),
+    () => [...shipmentData].sort((a, b) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime()),
     []
   );
 
@@ -191,8 +197,8 @@ export default function TrackingPage() {
 
           {dropdownOpen && (
             <>
-              <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-              <div className="absolute right-0 top-[calc(100%+6px)] z-20 w-72 bg-white border border-neutral-200 rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+              <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-72 bg-white border border-neutral-200 rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="px-3 py-2 border-b border-neutral-100">
                   <p className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">Select Shipment</p>
                 </div>
@@ -243,12 +249,11 @@ export default function TrackingPage() {
             </div>
 
             {/* Meta grid */}
-            <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-4">
               {[
-                { icon: Hash,      label: "Invoice",    value: shipment.invoice_id },
-                { icon: FileText,  label: "Quote",      value: shipment.quote_id },
-                { icon: Calendar,  label: "Est. Delivery", value: formatDate(shipment.estimated_delivery) },
-                { icon: Navigation,label: "Last Update", value: formatDate(shipment.last_updated) },
+                { icon: Hash,     label: "Invoice",      value: shipment.invoice_id },
+                { icon: FileText, label: "Quote",        value: shipment.quote_id },
+                { icon: Calendar, label: "Est. Delivery", value: formatDate(shipment.estimated_delivery) },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="bg-neutral-50 rounded-xl p-3 border border-neutral-100">
                   <div className="flex items-center gap-1.5 mb-1">
