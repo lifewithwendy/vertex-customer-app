@@ -89,28 +89,28 @@ export default function LoginPage() {
 
         {/* RIGHT PANE - Light Login Form Card */}
         <div className="relative z-10 lg:w-1/2 w-full flex-1 h-full p-2 sm:p-4 lg:p-6 flex">
-          <div className="w-full h-full bg-[#f6f7f9] p-6 sm:p-12 lg:p-16 flex flex-col items-center justify-center rounded-2xl lg:rounded-3xl shadow-xl overflow-y-auto overflow-x-hidden">
+          <div className="w-full h-full bg-[#f6f7f9] dark:bg-zinc-900 p-6 sm:p-12 lg:p-16 flex flex-col items-center justify-center rounded-2xl lg:rounded-3xl shadow-xl overflow-y-auto overflow-x-hidden">
             <div className="w-full max-w-[400px] space-y-8 my-auto py-4">
 
               {/* Form Title */}
               <div className="text-center space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900">
+                <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                   Welcome back to Vertex!
                 </h2>
               </div>
 
               {isSuccess ? (
-                <div className="bg-white p-8 rounded-3xl border border-neutral-200/80 shadow-sm text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                  <div className="w-12 h-12 rounded-full bg-orange-100 text-orange-600 mx-auto flex items-center justify-center">
+                <div className="bg-white dark:bg-zinc-800 p-8 rounded-3xl border border-neutral-200/80 dark:border-zinc-700 shadow-sm text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">
+                  <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 mx-auto flex items-center justify-center">
                     <CheckCircle2 className="w-6 h-6" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-lg font-semibold text-neutral-900">Successfully Logged In</h3>
-                    <p className="text-sm text-neutral-500">Redirecting to your dashboard...</p>
+                    <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Successfully Logged In</h3>
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400">Redirecting to your dashboard...</p>
                   </div>
                   <Button
                     onClick={() => setIsSuccess(false)}
-                    className="rounded-full mt-2 text-xs bg-white border border-neutral-300 text-neutral-700 hover:bg-neutral-50 shadow-none"
+                    className="rounded-full mt-2 text-xs bg-white dark:bg-zinc-700 border border-neutral-300 dark:border-zinc-600 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-zinc-600 shadow-none"
                   >
                     Sign in with another account
                   </Button>
@@ -141,7 +141,7 @@ export default function LoginPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="h-12 rounded-full bg-[#efefef] border-transparent px-5 text-sm text-neutral-900 placeholder:text-neutral-400 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-orange-500/70 focus-visible:border-orange-500/50 transition-all shadow-none"
+                      className="h-12 rounded-full bg-[#efefef] dark:bg-zinc-800 border-transparent dark:border-zinc-700 px-5 text-sm text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus-visible:bg-white dark:focus-visible:bg-zinc-700 focus-visible:ring-2 focus-visible:ring-orange-500/70 focus-visible:border-orange-500/50 transition-all shadow-none"
                     />
                   </div>
 
@@ -169,7 +169,7 @@ export default function LoginPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        className="h-12 w-full rounded-full bg-[#efefef] border-transparent pl-5 pr-12 text-sm text-neutral-900 focus-visible:bg-white focus-visible:ring-2 focus-visible:ring-orange-500/70 focus-visible:border-orange-500/50 transition-all shadow-none"
+                        className="h-12 w-full rounded-full bg-[#efefef] dark:bg-zinc-800 border-transparent dark:border-zinc-700 pl-5 pr-12 text-sm text-neutral-900 dark:text-neutral-100 focus-visible:bg-white dark:focus-visible:bg-zinc-700 focus-visible:ring-2 focus-visible:ring-orange-500/70 focus-visible:border-orange-500/50 transition-all shadow-none"
                       />
                       <button
                         type="button"

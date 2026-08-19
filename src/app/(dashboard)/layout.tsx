@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FileText, LogOut, Edit2, ClipboardList, MessageSquare, Truck } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -82,6 +83,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
               
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <ThemeToggle />
                 <button className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition-colors" title="Edit Profile">
                   <Edit2 className="w-4 h-4" />
                 </button>
@@ -95,7 +97,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Main Content Area Container */}
         <div className="relative z-10 flex-1 h-full py-2 pr-2 sm:py-4 sm:pr-4 lg:py-4 lg:pr-4 pl-0 flex">
-          <div className="w-full h-full bg-gradient-to-br from-[#f6f7f9] via-[#f6f7f9] to-orange-50 rounded-2xl lg:rounded-[2rem] shadow-xl overflow-y-auto">
+          <div className="w-full h-full bg-gradient-to-br from-[#f6f7f9] via-[#f6f7f9] to-orange-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-orange-950/20 rounded-2xl lg:rounded-[2rem] shadow-xl overflow-y-auto">
             {children}
           </div>
         </div>
