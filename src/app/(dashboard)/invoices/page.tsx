@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Eye, Download, X, Clock, CreditCard, Truck, MapPin, Package, CheckCircle2, CalendarDays } from "lucide-react";
+import { Search, Eye, Download, X, Clock, CreditCard, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -81,7 +81,7 @@ export default function InvoicesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [paymentInvoice, setPaymentInvoice] = useState<Invoice | null>(null);
-  const [trackingInvoice, setTrackingInvoice] = useState<Invoice | null>(null);
+
   const [rescheduleInvoice, setRescheduleInvoice] = useState<Invoice | null>(null);
   const [newRescheduleDate, setNewRescheduleDate] = useState("");
 
@@ -179,13 +179,7 @@ export default function InvoicesPage() {
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          <button 
-                            onClick={() => setTrackingInvoice(inv)}
-                            className="p-1.5 rounded-lg text-neutral-400 hover:text-purple-500 hover:bg-purple-50 transition-colors"
-                            title="Track Shipment"
-                          >
-                            <Truck className="w-4 h-4" />
-                          </button>
+
                           {inv.status === "Unpaid" && (
                             <>
                               <button 
@@ -351,164 +345,7 @@ export default function InvoicesPage() {
         </div>
       )}
 
-      {/* Tracking Modal */}
-      {trackingInvoice && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setTrackingInvoice(null)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between p-5 border-b border-neutral-100">
-              <div>
-                <h2 className="text-lg font-semibold text-neutral-900 flex items-center gap-2">
-                  <Truck className="w-5 h-5 text-orange-500" /> Track Shipment
-                </h2>
-                <p className="text-sm text-neutral-500 mt-1">Invoice ID: {trackingInvoice.invoice_id} &bull; Quote ID: {trackingInvoice.quote_id}</p>
-              </div>
-              <button onClick={() => setTrackingInvoice(null)} className="text-neutral-400 hover:text-neutral-600 transition-colors rounded-lg p-1 hover:bg-neutral-100">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-0 overflow-y-auto">
-              {/* Map/Progress Visualizer */}
-              <div className="bg-neutral-100 relative overflow-hidden flex items-center justify-center border-b border-neutral-200 h-64">
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1011854.767570417!2d79.52187063836262!3d7.502075752319089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593cf65a1e9d%3A0xe13da4b400e2d38c!2sSri%20Lanka!5e0!3m2!1sen!2sus!4v1716900000000!5m2!1sen!2sus" 
-                  className="absolute inset-0 w-full h-full pointer-events-none opacity-60 mix-blend-multiply"
-                  style={{ border: 0 }}
-                  allowFullScreen={false}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
-                
-                {/* Path Overlay */}
-                <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
-                  <div className="relative w-full max-w-sm h-full flex items-center justify-center">
-                    
-                    {/* SVG Path connecting points */}
-                    <svg className="absolute inset-0 w-full h-full" style={{ filter: 'drop-shadow(0px 4px 6px rgba(0,0,0,0.1))' }}>
-                      <path 
-                        d="M 120 180 Q 200 120 280 80" 
-                        fill="none" 
-                        stroke="#3b82f6" 
-                        strokeWidth="4" 
-                        strokeDasharray="8 8" 
-                        className="animate-[dash_20s_linear_infinite]"
-                      />
-                    </svg>
-                    
-                    <style>{`
-                      @keyframes dash {
-                        to {
-                          stroke-dashoffset: -1000;
-                        }
-                      }
-                    `}</style>
-                    
-                    {/* Origin Pin */}
-                    <div className="absolute flex flex-col items-center" style={{ left: '120px', top: '180px', transform: 'translate(-50%, -50%)' }}>
-                       <div className="w-4 h-4 bg-white border-4 border-neutral-800 rounded-full shadow-md z-10 relative"></div>
-                       <div className="bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded shadow-sm text-[10px] font-bold text-neutral-800 absolute top-5 whitespace-nowrap">
-                         Colombo Hub
-                       </div>
-                    </div>
-                    
-                    {/* Truck on Path */}
-                    <div className="absolute flex flex-col items-center animate-bounce z-20" style={{ left: '190px', top: '135px', transform: 'translate(-50%, -50%)' }}>
-                       <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center border-4 border-blue-500 shadow-lg shadow-blue-500/30">
-                          <Truck className="w-4 h-4 text-blue-600" />
-                       </div>
-                       <div className="bg-blue-600 px-2 py-1 rounded-full shadow-md text-[10px] font-bold text-white absolute -top-8 whitespace-nowrap flex items-center gap-1">
-                         <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                         In Transit
-                       </div>
-                    </div>
 
-                    {/* Destination Pin */}
-                    <div className="absolute flex flex-col items-center" style={{ left: '280px', top: '80px', transform: 'translate(-50%, -50%)' }}>
-                       <div className="relative">
-                         <MapPin className="w-8 h-8 text-red-500 drop-shadow-md z-10 relative" />
-                         <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black/20 rounded-full blur-[2px] z-0"></div>
-                       </div>
-                       <div className="bg-white/90 backdrop-blur-sm px-2 py-0.5 rounded shadow-sm text-[10px] font-bold text-neutral-800 absolute top-8 whitespace-nowrap">
-                         Destination
-                       </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-
-              {/* Tracking History */}
-              <div className="p-6">
-                <h3 className="text-sm font-semibold text-neutral-900 mb-6 uppercase tracking-wider">Tracking History</h3>
-                <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-neutral-200 before:to-transparent">
-                  {/* Event 1 */}
-                  <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-100 text-orange-600 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                      <CheckCircle2 className="w-5 h-5" />
-                    </div>
-                    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-4 rounded-xl border border-neutral-200 shadow-sm text-left">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold text-neutral-900 text-sm">Dispatched from Hub</span>
-                        <span className="text-xs text-neutral-500 font-medium">Aug 12, 14:30</span>
-                      </div>
-                      <p className="text-sm text-neutral-600">Package has been dispatched from the main sorting hub in Colombo.</p>
-                    </div>
-                  </div>
-
-                  {/* Event 2 */}
-                  <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-100 text-orange-600 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                      <CheckCircle2 className="w-5 h-5" />
-                    </div>
-                    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-4 rounded-xl border border-neutral-200 shadow-sm text-left">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold text-neutral-900 text-sm">Order Processed</span>
-                        <span className="text-xs text-neutral-500 font-medium">Aug 10, 09:15</span>
-                      </div>
-                      <p className="text-sm text-neutral-600">Order confirmed and packed. Ready for dispatch.</p>
-                    </div>
-                  </div>
-
-                  {/* Event 3 */}
-                  <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-100 text-orange-600 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                      <CheckCircle2 className="w-5 h-5" />
-                    </div>
-                    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-4 rounded-xl border border-neutral-200 shadow-sm text-left">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold text-neutral-900 text-sm">Order Placed</span>
-                        <span className="text-xs text-neutral-500 font-medium">Aug 08, 16:45</span>
-                      </div>
-                      <p className="text-sm text-neutral-600">Payment successful. Awaiting fulfillment.</p>
-                    </div>
-                  </div>
-                  
-                  {/* Event 4 (Future) */}
-                  <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-neutral-100 text-neutral-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                      <MapPin className="w-5 h-5" />
-                    </div>
-                    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-transparent p-4 text-left">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold text-neutral-400 text-sm">Estimated Delivery</span>
-                        <span className="text-xs text-neutral-400 font-medium">Est. Aug 14</span>
-                      </div>
-                      <p className="text-sm text-neutral-400">Customer Address, Sri Lanka</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-5 border-t border-neutral-100 bg-neutral-50/50 flex justify-end">
-              <Button type="button" onClick={() => setTrackingInvoice(null)} className="rounded-full px-6 h-10 bg-neutral-900 hover:bg-neutral-800 text-white border-0 shadow-sm">
-                Close Tracker
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Reschedule Modal */}
       {rescheduleInvoice && (
