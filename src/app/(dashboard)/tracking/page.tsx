@@ -12,6 +12,9 @@ import {
   Calendar,
   Hash,
   FileText,
+  CreditCard,
+  Clock,
+  CalendarClock,
 } from "lucide-react";
 
 type TrackingEvent = {
@@ -151,6 +154,60 @@ const statusConfig: Record<Shipment["status"], { bg: string; text: string; borde
   "Out for Delivery": { bg: "bg-purple-50", text: "text-purple-700", border: "border-purple-200", dot: "bg-purple-500", label: "Out for Delivery" },
 };
 
+type InvoicePayment = {
+  invoice_id: string;
+  total_amount: number;
+  status: "Paid" | "Unpaid" | "Rescheduled";
+  rescheduled_date?: string;
+};
+
+const invoiceData: Record<string, InvoicePayment> = {
+  "INV-1042": { invoice_id: "INV-1042", total_amount: 4850, status: "Unpaid" },
+  "INV-1043": { invoice_id: "INV-1043", total_amount: 6200, status: "Paid" },
+  "INV-1044": { invoice_id: "INV-1044", total_amount: 3200, status: "Rescheduled", rescheduled_date: "2026-08-25" },
+  "INV-1045": { invoice_id: "INV-1045", total_amount: 8150, status: "Unpaid" },
+  "INV-1046": { invoice_id: "INV-1046", total_amount: 5000, status: "Paid" },
+  "INV-1047": { invoice_id: "INV-1047", total_amount: 2800, status: "Unpaid" },
+};
+
+const paymentConfig: Record<InvoicePayment["status"], {
+  icon: React.ElementType;
+  label: string;
+  bg: string;
+  border: string;
+  text: string;
+  amountColor: string;
+  iconColor: string;
+}> = {
+  Paid: {
+    icon: CheckCircle2,
+    label: "Paid",
+    bg: "bg-green-50 dark:bg-green-950/20",
+    border: "border-green-200 dark:border-green-800/40",
+    text: "text-green-700 dark:text-green-400",
+    amountColor: "text-green-800 dark:text-green-300",
+    iconColor: "text-green-500 dark:text-green-400",
+  },
+  Unpaid: {
+    icon: CreditCard,
+    label: "Unpaid",
+    bg: "bg-red-50 dark:bg-red-950/20",
+    border: "border-red-200 dark:border-red-800/40",
+    text: "text-red-700 dark:text-red-400",
+    amountColor: "text-red-800 dark:text-red-300",
+    iconColor: "text-red-500 dark:text-red-400",
+  },
+  Rescheduled: {
+    icon: CalendarClock,
+    label: "Payment Rescheduled",
+    bg: "bg-blue-50 dark:bg-blue-950/20",
+    border: "border-blue-200 dark:border-blue-800/40",
+    text: "text-blue-700 dark:text-blue-400",
+    amountColor: "text-blue-800 dark:text-blue-300",
+    iconColor: "text-blue-500 dark:text-blue-400",
+  },
+};
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
@@ -172,6 +229,8 @@ export default function TrackingPage() {
   const completedEvents = shipment.events.filter((e) => e.completed);
   const totalSteps = shipment.events.length;
   const progress = Math.round((completedEvents.length / totalSteps) * 100);
+  const invoice = invoiceData[shipment.invoice_id];
+  const pc = invoice ? paymentConfig[invoice.status] : null;
 
   return (
     <div className="p-6 sm:p-8 h-full flex flex-col gap-6 overflow-y-auto">
@@ -464,7 +523,35 @@ export default function TrackingPage() {
               ))}
             </div>
           </div>
+
+          {/* Payment Status Card */}
+          {invoice && pc && (
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200/70 dark:border-zinc-700/60 shadow-sm p-5">
+              <h3 className="text-xs font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-4">Payment</h3>
+              <div className={`rounded-xl border p-4 ${pc.bg} ${pc.border}`}>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-white/60 dark:bg-black/20 border ${pc.border}`}>
+                      <pc.icon className={`w-4 h-4 ${pc.iconColor}`} />
+                    </div>
+                    <div className="min-w-0">
+                      <p className={`text-sm font-bold ${pc.text}`}>{pc.label}</p>
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">{invoice.invoice_id}</p>
+                    </div>
+                  </div>
+                  <p className={`text-base font-bold shrink-0 ${pc.amountColor}`}>LKR {invoice.total_amount.toLocaleString()}</p>
+                </div>
+                {invoice.status === "Rescheduled" && invoice.rescheduled_date && (
+                  <div className={`mt-3 pt-3 border-t ${pc.border} flex items-center gap-1.5`}>
+                    <CalendarClock className={`w-3.5 h-3.5 shrink-0 ${pc.iconColor}`} />
+                    <p className={`text-xs font-medium ${pc.text}`}>Rescheduled to {invoice.rescheduled_date}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
+
       </div>
     </div>
   );
