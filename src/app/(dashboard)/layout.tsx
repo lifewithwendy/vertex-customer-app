@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FileText, LogOut, Edit2, ClipboardList, MessageSquare, Truck } from "lucide-react";
@@ -9,6 +9,24 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+
+  const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => { if (data) setUser(data); })
+      .catch(() => {});
+  }, []);
+
+  const displayName = user?.name ?? '…';
+  const displayRole = user?.role ?? '';
+  const initials = displayName
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -74,11 +92,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex items-center justify-between group p-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                  WE
+                  {initials}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-white">Wendt Test-Dev</span>
-                  <span className="text-xs text-neutral-500 group-hover:text-neutral-400 transition-colors">Admin</span>
+                  <span className="text-sm font-medium text-white">{displayName}</span>
+                  <span className="text-xs text-neutral-500 group-hover:text-neutral-400 transition-colors">{displayRole}</span>
                 </div>
               </div>
               
