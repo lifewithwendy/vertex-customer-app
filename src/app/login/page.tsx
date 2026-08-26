@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
@@ -72,11 +73,18 @@ export default function LoginPage() {
         <div className="relative z-10 lg:w-1/2 w-full h-72 lg:h-full p-6 sm:p-10 md:p-14 flex flex-col justify-between bg-transparent">
 
           {/* Top Logo */}
-          <div className="relative z-10 flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-              <span className="font-extrabold text-white text-base leading-none">V</span>
+          <div className="relative z-10 flex items-center gap-3">
+            <Image
+              src="/vertex-icon.png"
+              alt="Vertex Logistics Logo"
+              width={48}
+              height={48}
+              className="object-contain drop-shadow-[0_0_10px_rgba(249,115,22,0.5)]"
+            />
+            <div className="flex flex-col leading-tight">
+              <span className="text-xl font-bold tracking-tight text-white">Vertex</span>
+              <span className="text-[10px] font-medium tracking-[0.2em] text-orange-400 uppercase">Logistics</span>
             </div>
-            <span className="text-2xl font-bold tracking-tight text-white">Vertex</span>
           </div>
 
           {/* Bottom Tagline */}
@@ -192,8 +200,8 @@ export default function LoginPage() {
                       type="submit"
                       disabled={isLoading}
                       className={`w-full h-12 rounded-full font-medium text-sm transition-all duration-200 shadow-none ${isFormValid
-                          ? "bg-neutral-900 hover:bg-orange-600 text-white shadow-md shadow-orange-500/10 cursor-pointer"
-                          : "bg-[#dcdcdc] hover:bg-[#d5d5d5] text-neutral-400 cursor-not-allowed"
+                        ? "bg-neutral-900 hover:bg-orange-600 text-white shadow-md shadow-orange-500/10 cursor-pointer"
+                        : "bg-[#dcdcdc] hover:bg-[#d5d5d5] text-neutral-400 cursor-not-allowed"
                         }`}
                     >
                       {isLoading ? (
